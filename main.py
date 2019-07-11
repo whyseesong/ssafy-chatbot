@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import slackbot
 # import crawlAPI
+# import stockRNN
 
 
 if __name__ == '__main__':
@@ -13,3 +14,4 @@ if __name__ == '__main__':
     # crawl_stock.get_chart_with_id("005930")
     # crawl_stock.get_similar_company_id("005930")
     # crawlAPI.get_company_name_with_id("000660")
+    # print(stockRNN.pridict_stock_price("005930"))

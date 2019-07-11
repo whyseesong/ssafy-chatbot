@@ -106,7 +106,7 @@ def crawl_stock_with_id(company_id):
     crawled_data = []
 
     # 30페이지 크롤링
-    for page in range(2):
+    for page in range(35):
         url = "https://finance.naver.com/item/sise_day.nhn?code=" + company_id + "&page=" + str(page)
         source_code = urllib.request.urlopen(url).read()
         soup = BeautifulSoup(source_code, "html.parser")
@@ -148,7 +148,7 @@ def get_chart_with_id(company_id):
     # 파일형식은 '종목번호_현재날짜.csv'
     img_name = company_id + '_' + date + ".png"
 
-    urllib.request.urlretrieve(img_url, "./img/" + img_name)
+    urllib.request.urlretrieve(img_url, "./static/img/" + img_name)
 
     return img_url
 

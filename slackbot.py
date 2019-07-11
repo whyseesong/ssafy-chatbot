@@ -3,19 +3,19 @@ import re
 import json
 import os
 import crawlAPI
-import stock_RNN
+import stockRNN
 
 from bs4 import BeautifulSoup
 
-from flask import Flask
+from flask import Flask, render_template
 from slack import WebClient
 from slack.web.classes.blocks import *
 from slackeventsapi import SlackEventAdapter
 # from slackclient import SlackClient
 
-SLACK_TOKEN = "xoxb-683354964401-691851652390-XqDbPERKnTOOaJ0bzkwX4G3d"
 # 이게 자꾸 바뀐다..
-SLACK_SIGNING_SECRET = "9f85bc48ba471139e4abd015c8cae890"
+SLACK_TOKEN = "xoxb-683354964401-691851652390-pDT522uvldPwhhR2lh0cPIUX"
+SLACK_SIGNING_SECRET = "34dfe7c950d6a6a47407689bc869e9b4"
 
 
 slack_verification = "5Kgry39DBRP5aIC0N2Ev6O1V"
@@ -23,7 +23,7 @@ slack_client_id = "683354964401.678306745475"
 
 # sc = SlackClient(SLACK_TOKEN)
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='template')
 
 # /listening 으로 슬랙 이벤트를 받습니다.
 slack_events_adaptor = SlackEventAdapter(SLACK_SIGNING_SECRET, "/listening", app)
@@ -39,28 +39,29 @@ def _chatbot_main(textin):
         answer = "안녕하세요! 주식 정보를 알려주는 '개미의 꿈'입니다! \n어떤 회사의 정보를 원하시나요?"
     
     # 종가예측
-    # elif textin[-4:] == "종가예측":
-    #     inputdata = textin.split()
-    #     cname = inputdata[0]
-    #     cid = crawlAPI.get_company_id_with_name(cname)
-    #     print("=================================================")
-    #     print(cid)
-    #     print(cname)
-    #     predict = str(stock_RNN.pridict_stock_price(cid))
-    #     print(predict)
-    #     # answer = "RNN의 LSTM 모델로 예측 결과 " + cname +"의 내일 종가는 " + predict + "원이 될 예정입니다."
-    #     answer = "\n 빨리 파세요!/사세요!"
-    #     # imgurl = "./img/predict/" + cid + ".png"
-    #     block1 = SectionBlock(
-    #         text = answer
-    #     )
-    #     # block2 = ImageBlock(
-    #     #     image_url = imgurl,
-    #     #     alt_text="~그래프를 보여드리고 싶은데 알 수 없는 오류가 발생했어요....~"
-    #     # )
-    #     # my_blocks = [block1, block2]
-    #     my_blocks = [block1]
-    #     return my_blocks
+    elif textin[-4:] == "종가예측":
+        inputdata = textin.split()
+        cname = inputdata[0]
+        cid = crawlAPI.get_company_id_with_name(cname)
+
+        # print(cid)
+        # print(cname)
+        predict = str(stockRNN.pridict_stock_price(cid))
+        predict = "{:,}".format(int(predict))
+        # print(predict)
+        answer = "RNN의 LSTM 모델로 예측 결과 " + cname +"의 내일 종가는 " + predict + "원이 될 예정입니다."
+        answer += "\n 서둘러서 움직이세요!"
+        # imgurl = "http://81346768.ngrok.io/static/img/predict/" + cid + ".png"
+        # block1 = SectionBlock(
+        #     text = answer
+        # )
+        # block2 = ImageBlock(
+        #     image_url = imgurl,
+        #     alt_text="~그래프를 보여드리고 싶은데 알 수 없는 오류가 발생했어요....~"
+        # )
+        # my_blocks = [block1, block2]
+
+        return answer
 
     # 동종업종
     elif textin[-4:] == "동종업종":
@@ -221,6 +222,10 @@ def index():
 # def hello_rabbit():
 #     data = {'rabbit':'white', 'character':'elice'}
 #     return jsonify(data)
-    
+
+@app.route('/<cid>')
+def post_img(cid):
+    p_img_route = "./img/predict/" + cid + ".png"
+    return render_template("imgpost.html", image_file=p_img_route)
 # # 아래 코드는 수정하지 마세요.
 # app.run('0.0.0.0', port=8080)

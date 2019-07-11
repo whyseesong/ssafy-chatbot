@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
+import json
+import os
 import crawlAPI
 import stock_RNN
 
@@ -9,9 +11,17 @@ from flask import Flask
 from slack import WebClient
 from slack.web.classes.blocks import *
 from slackeventsapi import SlackEventAdapter
+# from slackclient import SlackClient
 
-SLACK_TOKEN = "xoxb-683354964401-691851652390-EOccutmwPJjdx8sX3d3JU7Yu"
+SLACK_TOKEN = "xoxb-683354964401-691851652390-XqDbPERKnTOOaJ0bzkwX4G3d"
+# 이게 자꾸 바뀐다..
 SLACK_SIGNING_SECRET = "9f85bc48ba471139e4abd015c8cae890"
+
+
+slack_verification = "5Kgry39DBRP5aIC0N2Ev6O1V"
+slack_client_id = "683354964401.678306745475"
+
+# sc = SlackClient(SLACK_TOKEN)
 
 app = Flask(__name__)
 
@@ -28,32 +38,29 @@ def _chatbot_main(textin):
     if textin == "개미야!":
         answer = "안녕하세요! 주식 정보를 알려주는 '개미의 꿈'입니다! \n어떤 회사의 정보를 원하시나요?"
     
-
-
     # 종가예측
-    elif textin[-4:] == "종가예측":
-        inputdata = textin.split()
-        cname = inputdata[0]
-        cid = crawlAPI.get_company_id_with_name(cname)
-        print("=================================================")
-        print(cid)
-        print(cname)
-        predict = str(stock_RNN.pridict_stock_price(cid))
-        print(predict)
-        # answer = "RNN의 LSTM 모델로 예측 결과 " + cname +"의 내일 종가는 " + predict + "원이 될 예정입니다."
-        answer = "\n 빨리 파세요!/사세요!"
-        imgurl = "./img/predict/" + cid + ".png"
-        block1 = SectionBlock(
-            text = answer
-        )
-        block2 = ImageBlock(
-            image_url = imgurl,
-            alt_text="~그래프를 보여드리고 싶은데 알 수 없는 오류가 발생했어요....~"
-        )
-        my_blocks = [block1, block2]
-        return my_blocks
-
-
+    # elif textin[-4:] == "종가예측":
+    #     inputdata = textin.split()
+    #     cname = inputdata[0]
+    #     cid = crawlAPI.get_company_id_with_name(cname)
+    #     print("=================================================")
+    #     print(cid)
+    #     print(cname)
+    #     predict = str(stock_RNN.pridict_stock_price(cid))
+    #     print(predict)
+    #     # answer = "RNN의 LSTM 모델로 예측 결과 " + cname +"의 내일 종가는 " + predict + "원이 될 예정입니다."
+    #     answer = "\n 빨리 파세요!/사세요!"
+    #     # imgurl = "./img/predict/" + cid + ".png"
+    #     block1 = SectionBlock(
+    #         text = answer
+    #     )
+    #     # block2 = ImageBlock(
+    #     #     image_url = imgurl,
+    #     #     alt_text="~그래프를 보여드리고 싶은데 알 수 없는 오류가 발생했어요....~"
+    #     # )
+    #     # my_blocks = [block1, block2]
+    #     my_blocks = [block1]
+    #     return my_blocks
 
     # 동종업종
     elif textin[-4:] == "동종업종":
@@ -109,7 +116,8 @@ def _chatbot_main(textin):
     # 회사명으로 주가정보 출력
     else:
         cid = crawlAPI.get_company_id_with_name(textin)
-        if cid:
+
+        if cid != "[], Nam":
             data = crawlAPI.crawl_stock_with_id(cid)
             crawlAPI.list_to_csv(data, cid)
 
@@ -145,7 +153,9 @@ def _chatbot_main(textin):
             return my_blocks
 
         else:
-            answer = text + "가 무슨 말씀인지 모르겠어요... 알아듣기 쉽게 말씀해주시면 좋겠어요..."
+            answer = "'" + textin + "'(이)가 무슨 말씀인지 모르겠어요... 알아듣기 쉽게 말씀해주시면 좋겠어요..."
+            print("========================================")
+            print(answer)
             return answer
         
 
@@ -160,6 +170,7 @@ def app_mentioned(event_data):
     text = event_data["event"]["text"]
 
     # 답변 
+    keywords = "응답을 기다리는 중이에요.. 잠시만 기다려 주세요!"
     keywords = _chatbot_main(text)
     print(keywords)
     
@@ -180,3 +191,36 @@ def app_mentioned(event_data):
 def index():
     
     return "<h1>Server is ready.</h1>"
+
+# @app.route("/listening", methods=["GET", "POST"])
+# def hears():
+#     slack_event = json.loads(request.data)
+
+#     if "challenge" in slack_event:
+#         return make_response(slack_event["challenge"], 200, {"content_type": "application/json"})
+    
+#     if slack_verification != slack_event.get("token"):
+#         message = "invalid Slack verification token: %s" % (slack_event["token"])
+#         make_response(message, 403, {"X-Slack-No-Retry": 1})
+    
+#     return make_response("[NO EVENT IN SLACK REQUEST] These are not the droids\nyou are looking for.", 404, {"X-Slack-No-Retry": 1})
+
+
+
+# 로컬 사진 아이디어
+# from flask import Flask
+# from flask import jsonify
+# app = Flask(__name__)
+
+# @app.route('/')
+# def hello_world():
+#     data = {'animal':'rabbit', 'fruit':'apple'}
+#     return jsonify(data)
+
+# @app.route('/elice_info')
+# def hello_rabbit():
+#     data = {'rabbit':'white', 'character':'elice'}
+#     return jsonify(data)
+    
+# # 아래 코드는 수정하지 마세요.
+# app.run('0.0.0.0', port=8080)

@@ -111,14 +111,14 @@ def pridict_stock_price(company_id):
     # textX 값을 통해 Y_pred 값을 예측해 봄
     testPredict = sess.run(Y_pred, feed_dict={X: testX})
 
-    import matplotlib.pyplot as plt
+    # import matplotlib.pyplot as plt
+    # matplotlib.use('Agg')
 
-    plt.plot(testY)         # true
-    plt.plot(testPredict)   # 예측한 값
-    fig=plt.gcf()
+    # plt.plot(testY)         # true
+    # plt.plot(testPredict)   # 예측한 값
+    # fig=plt.gcf()
     # plt.show()
 
-    
 
 
 
@@ -126,10 +126,10 @@ def pridict_stock_price(company_id):
     # now = datetime.datetime.now()
     # date = now.strftime('%Y%m%d')
 
-    img_name = "./img/predict/" + company_id + ".png"
+    # img_name = "./img/predict/" + company_id + ".png"
     # img_name = "./img/predict/" + company_id + '_' + date + ".png"
     # print(img_name)
-    fig.savefig(img_name)
+    # fig.savefig(img_name)
 
 
     return 5000

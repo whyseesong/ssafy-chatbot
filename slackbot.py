@@ -19,9 +19,6 @@ app = Flask(__name__)
 slack_events_adaptor = SlackEventAdapter(SLACK_SIGNING_SECRET, "/listening", app)
 slack_web_client = WebClient(token=SLACK_TOKEN)
 
-_company_id = ''
-_company_name = ''
-_stock_price = 0
 
 def _chatbot_main(textin):
     answer = ""
@@ -34,26 +31,27 @@ def _chatbot_main(textin):
 
 
     # 종가예측
-    # elif textin[-4:] == "종가예측":
-    #     inputdata = textin.split()
-    #     cname = inputdata[0]
-    #     cid = crawlAPI.get_company_id_with_name(cname)
-    #     print("=================================================")
-    #     print(cid)
-    #     print(cname)
-    #     predict = str(stock_RNN.pridict_stock_price(cid))
-    #     # answer = "RNN의 LSTM 모델로 예측 결과 " + cname +"의 내일 종가는 " + predict + "원이 될 예정입니다."
-    #     answer = "\n 빨리 파세요!/사세요!"
-    #     imgurl = "./img/predict/" + cid + ".png"
-    #     block1 = SectionBlock(
-    #         text = answer
-    #     )
-    #     block2 = ImageBlock(
-    #         image_url = imgurl,
-    #         alt_text="~그래프를 보여드리고 싶은데 알 수 없는 오류가 발생했어요....~"
-    #     )
-    #     my_blocks = [block1, block2]
-    #     return my_blocks
+    elif textin[-4:] == "종가예측":
+        inputdata = textin.split()
+        cname = inputdata[0]
+        cid = crawlAPI.get_company_id_with_name(cname)
+        print("=================================================")
+        print(cid)
+        print(cname)
+        predict = str(stock_RNN.pridict_stock_price(cid))
+        print(predict)
+        # answer = "RNN의 LSTM 모델로 예측 결과 " + cname +"의 내일 종가는 " + predict + "원이 될 예정입니다."
+        answer = "\n 빨리 파세요!/사세요!"
+        imgurl = "./img/predict/" + cid + ".png"
+        block1 = SectionBlock(
+            text = answer
+        )
+        block2 = ImageBlock(
+            image_url = imgurl,
+            alt_text="~그래프를 보여드리고 싶은데 알 수 없는 오류가 발생했어요....~"
+        )
+        my_blocks = [block1, block2]
+        return my_blocks
 
 
 
@@ -111,8 +109,6 @@ def _chatbot_main(textin):
     # 회사명으로 주가정보 출력
     else:
         cid = crawlAPI.get_company_id_with_name(textin)
-        _company_name = textin
-        _company_id = cid
         if cid:
             data = crawlAPI.crawl_stock_with_id(cid)
             crawlAPI.list_to_csv(data, cid)

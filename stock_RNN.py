@@ -15,11 +15,11 @@ def pridict_stock_price(company_id):
         # 최대값과 최소 값의 차이(A)를 구한다.
         denominator = np.max(data,0) - np.min(data,0)
         # 너무 큰 값이 나오지 않도록 나눈다
-        print("정규화값 : "+ str(numerator / (denominator + 1e-7)))
+        # print("정규화값 : "+ str(numerator / (denominator + 1e-7)))
         return numerator / (denominator + 1e-7)
 
-    def reverse_min_max_scaling(price, testPredict):
-        print("")
+    # def reverse_min_max_scaling(price, testPredict):
+        # print("")
         
 
     # LSTM과 Linear Regression 으로 해보기
@@ -58,7 +58,7 @@ def pridict_stock_price(company_id):
     for i in range(0, len(y) - win_size):
         _x = x[i:i + win_size]
         _y = y[i + win_size]  # 다음 종가
-        print(_x, "->", _y)
+        # print(_x, "->", _y)
         dataX.append(_x)        # x는 window_size만큼 저장
         dataY.append(_y)        # y는 예측값 1개씩 저장
 
@@ -106,7 +106,7 @@ def pridict_stock_price(company_id):
     # 학습시키기
     for i in range(1000):
         _, l = sess.run([train, loss],feed_dict={X: trainX, Y: trainY})   # trainX, trainY를 넣어 학습시킴
-        print(i, l)
+        # print(i, l)
 
     # textX 값을 통해 Y_pred 값을 예측해 봄
     testPredict = sess.run(Y_pred, feed_dict={X: testX})
@@ -128,7 +128,7 @@ def pridict_stock_price(company_id):
 
     img_name = "./img/predict/" + company_id + ".png"
     # img_name = "./img/predict/" + company_id + '_' + date + ".png"
-    print(img_name)
+    # print(img_name)
     fig.savefig(img_name)
 
 

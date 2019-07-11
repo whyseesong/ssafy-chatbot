@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import slackbot
+# import crawlAPI
 
 
 if __name__ == '__main__':
@@ -11,4 +12,4 @@ if __name__ == '__main__':
     # crawl_stock.list_to_csv(crawl_stock.crawl_stock_with_id("005930"), "005930")
     # crawl_stock.get_chart_with_id("005930")
     # crawl_stock.get_similar_company_id("005930")
-    
+    # crawlAPI.get_company_name_with_id("000660")

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 
 import urllib.request
 import urllib.parse
@@ -43,7 +44,28 @@ def get_company_id_with_name(name):
 
     return company_code
 
+def get_company_name_with_id(code):
+    code_df = pandas.read_html('http://kind.krx.co.kr/corpgeneral/corpList.do?method=download&searchType=13', header=0)[0] 
+    # 종목코드가 6자리이기 때문에 6자리를 맞춰주기 위해 설정해줌 
+    code_df.종목코드 = code_df.종목코드.map('{:06d}'.format) 
+    # 우리가 필요한 것은 회사명과 종목코드이기 때문에 필요없는 column들은 제외해준다. 
+    code_df = code_df[['회사명', '종목코드']] 
+    # 한글로된 컬럼명을 영어로 바꿔준다. 
+    code_df = code_df.rename(columns={'회사명': 'name', '종목코드': 'code'}) 
 
+    # '삼성전자'회사명의 행 번호 찾기
+    rownum = code_df['code'].isin([code]).values
+    # 해당 행에서 코드만 추출
+    row = code_df[code_df.code == code]['name']
+    # 파싱
+    print(row)
+    p = re.compile("[^0-9]")
+    company_name = str(row)
+    company_name = "".join(p.findall(company_name))[4:]
+    spacepos = company_name.find('\n')
+    company_name = company_name[:spacepos]
+    # print(company_name)
+    return company_name
 
 # def get_company_name_with_wrong_input(name):
 

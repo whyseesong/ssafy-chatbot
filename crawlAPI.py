@@ -36,8 +36,10 @@ def get_company_id_with_name(name):
     # 해당 행에서 코드만 추출
     row = code_df[code_df.name == name]['code']
     # 파싱
-    company_code = str(row)[7:14].strip()
 
+    # company_code = str(row)[7:14].strip()
+    company_code = str(row).split(' ')[4][:7].strip()
+    # print(type(company_code))
     # if company_code:
     #     get_company_name_with_wrong_input(name)
     #     return

@@ -14,8 +14,7 @@ from slackeventsapi import SlackEventAdapter
 # from slackclient import SlackClient
 
 # 이게 자꾸 바뀐다..
-SLACK_TOKEN = "xoxb-683354964401-691851652390-pDT522uvldPwhhR2lh0cPIUX"
-SLACK_SIGNING_SECRET = "34dfe7c950d6a6a47407689bc869e9b4"
+
 
 
 slack_verification = "5Kgry39DBRP5aIC0N2Ev6O1V"
@@ -51,17 +50,17 @@ def _chatbot_main(textin):
         # print(predict)
         answer = "RNN의 LSTM 모델로 예측 결과 " + cname +"의 내일 종가는 " + predict + "원이 될 예정입니다."
         answer += "\n 서둘러서 움직이세요!"
-        # imgurl = "http://81346768.ngrok.io/static/img/predict/" + cid + ".png"
-        # block1 = SectionBlock(
-        #     text = answer
-        # )
-        # block2 = ImageBlock(
-        #     image_url = imgurl,
-        #     alt_text="~그래프를 보여드리고 싶은데 알 수 없는 오류가 발생했어요....~"
-        # )
-        # my_blocks = [block1, block2]
+        imgurl = "http://cc9774b7.ngrok.io/static/img/predict/" + cid + ".png"
+        block1 = SectionBlock(
+            text = answer
+        )
+        block2 = ImageBlock(
+            image_url = imgurl,
+            alt_text="~그래프를 보여드리고 싶은데 알 수 없는 오류가 발생했어요....~"
+        )
+        my_blocks = [block1, block2]
 
-        return answer
+        return my_blocks
 
     # 동종업종
     elif textin[-4:] == "동종업종":

@@ -3,7 +3,9 @@ import pandas as pd
 import tensorflow as tf
 import datetime
 
-
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
 
 # tf.set_random_seed(777)  # for reproducibility
 def pridict_stock_price(company_id):
@@ -123,16 +125,16 @@ def pridict_stock_price(company_id):
     predict_price = reverse_min_max_scaling(xyz, testPredict)
     predict_price = str(int(predict_price[0][4]*10/10))
 
-    # import matplotlib.pyplot as plt
     
-    # plt.plot(testY)  # true
-    # plt.plot(testPredict)  # 예측한 값
-    # fig = plt.gcf()
-    # # plt.show()
+    
+    plt.plot(testY)  # true
+    plt.plot(testPredict)  # 예측한 값
+    fig = plt.gcf()
+    # plt.show()
 
 
-    # img_name = "./static/img/predict/" + company_id + ".png"
-    # fig.savefig(img_name)
+    img_name = "./static/img/predict/" + company_id + ".png"
+    fig.savefig(img_name)
 
 
     return predict_price
